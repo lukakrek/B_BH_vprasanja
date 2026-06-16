@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-BH preizkus znanja — Vodnik psa spremljevalca</title>
+<style>
+  :root{
+    --paper:#f3efe6;
+    --ink:#23211c;
+    --moss:#3f5b3c;
+    --moss-d:#2c4129;
+    --clay:#b4502e;
+    --clay-d:#8f3c20;
+    --line:#d6cfbf;
+    --card:#fbf9f3;
+    --green-bg:#e3ecdd;
+    --green-br:#7ba074;
+    --red-bg:#f3dfd6;
+    --red-br:#cf8a6f;
+    --muted:#6f6a5e;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(63,91,60,.05), transparent 38%),
+      radial-gradient(circle at 88% 92%, rgba(180,80,46,.05), transparent 40%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px}
+
+  /* Header */
+  header{
+    border:1.5px solid var(--ink);
+    background:var(--card);
+    padding:22px 24px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--clay-d);margin:0 0 8px;
+  }
+  h1{
+    margin:0;font-size:clamp(26px,5.5vw,38px);line-height:1.05;
+    font-weight:700;letter-spacing:-.01em;
+  }
+  .sub{margin:10px 0 0;color:var(--muted);font-size:15px;max-width:52ch}
+  .paw{position:absolute;top:18px;right:20px;width:34px;height:34px;opacity:.5}
+
+  /* Controls bar */
+  .bar{
+    display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+    margin:18px 0 6px;
+  }
+  .scorebox{
+    font-family:ui-monospace,monospace;font-size:13px;
+    border:1.5px solid var(--ink);background:var(--card);
+    padding:9px 14px;letter-spacing:.04em;
+  }
+  .scorebox b{color:var(--moss-d)}
+  .spacer{flex:1}
+  button{
+    font-family:inherit;cursor:pointer;border:none;
+    transition:transform .06s ease, background .15s ease, box-shadow .15s ease;
+  }
+  button:active{transform:translateY(1px)}
+  .btn-primary{
+    background:var(--clay);color:#fdf6ef;
+    font-size:15px;font-weight:600;letter-spacing:.02em;
+    padding:11px 20px;border:1.5px solid var(--clay-d);
+    box-shadow:3px 3px 0 var(--clay-d);
+  }
+  .btn-primary:hover{background:var(--clay-d)}
+  .btn-primary:active{box-shadow:1px 1px 0 var(--clay-d)}
+  .btn-ghost{
+    background:transparent;color:var(--moss-d);
+    font-size:14px;font-weight:600;padding:10px 16px;
+    border:1.5px solid var(--green-br);
+  }
+  .btn-ghost:hover{background:var(--green-bg)}
+
+  /* Question card */
+  ol.quiz{list-style:none;margin:18px 0 0;padding:0;counter-reset:qn}
+  li.q{
+    counter-increment:qn;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--moss);
+    padding:18px 20px 16px;
+    margin:0 0 16px;
+  }
+  .q-head{display:flex;gap:12px;align-items:baseline}
+  .q-num{
+    font-family:ui-monospace,monospace;font-size:12px;font-weight:700;
+    color:#fff;background:var(--moss);
+    min-width:30px;height:30px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .q-num::before{content:counter(qn,decimal-leading-zero)}
+  .q-tag{
+    font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);
+    border:1px solid var(--line);padding:2px 7px;align-self:center;margin-left:auto;
+  }
+  .q-text{font-size:17px;font-weight:600;margin:2px 0 14px;padding-left:42px}
+
+  .opts{display:flex;flex-direction:column;gap:8px;padding-left:42px}
+  label.opt{
+    display:flex;gap:11px;align-items:flex-start;
+    border:1px solid var(--line);background:#fff;
+    padding:10px 13px;cursor:pointer;font-size:15px;
+    transition:border-color .12s, background .12s;
+  }
+  label.opt:hover{border-color:var(--moss);background:#fcfbf7}
+  label.opt input{margin:3px 0 0;accent-color:var(--clay);flex:0 0 auto}
+  .opt .letter{
+    font-family:ui-monospace,monospace;font-weight:700;font-size:13px;
+    color:var(--moss-d);flex:0 0 auto;min-width:16px;
+  }
+  label.opt.is-correct{background:var(--green-bg);border-color:var(--green-br)}
+  label.opt.is-wrong{background:var(--red-bg);border-color:var(--red-br)}
+  label.opt.locked{cursor:default}
+
+  .q-foot{display:flex;gap:12px;align-items:center;margin:13px 0 0;padding-left:42px}
+  .btn-check{
+    background:var(--moss);color:#f4f1e6;font-size:13.5px;font-weight:600;
+    letter-spacing:.03em;padding:8px 16px;border:1.5px solid var(--moss-d);
+  }
+  .btn-check:hover{background:var(--moss-d)}
+  .btn-check:disabled{opacity:.45;cursor:default;background:var(--moss)}
+  .verdict{font-size:14px;font-weight:600;display:none}
+  .verdict.ok{color:var(--moss-d);display:block}
+  .verdict.no{color:var(--clay-d);display:block}
+
+  footer{
+    margin-top:34px;text-align:center;color:var(--muted);font-size:12.5px;
+    border-top:1px solid var(--line);padding-top:16px;
+  }
+  footer a{color:var(--clay-d)}
+
+  @media (max-width:560px){
+    .q-text,.opts,.q-foot{padding-left:0}
+    .q-text{margin-top:10px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="paw" viewBox="0 0 64 64" fill="var(--moss)" aria-hidden="true">
+      <ellipse cx="20" cy="20" rx="6" ry="8"/><ellipse cx="34" cy="15" rx="6" ry="8.5"/>
+      <ellipse cx="47" cy="22" rx="5.5" ry="7.5"/>
+      <path d="M32 30c-9 0-16 7-16 14 0 5 4 7 8 6 3-1 5-2 8-2s5 1 8 2c4 1 8-1 8-6 0-7-7-14-16-14z"/>
+    </svg>
+    <p class="eyebrow">KZS · Izpit za psa spremljevalca</p>
+    <h1>B-BH preizkus znanja</h1>
+    <p class="sub">40 naključno izbranih vprašanj iz uradnega nabora. Izberi odgovor in pritisni Preveri. Za nov nabor pritisni Premešaj.</p>
+  </header>
+
+  <div class="bar">
+    <div class="scorebox">Preverjeno <b id="answered">0</b>/40 &nbsp;·&nbsp; Pravilno <b id="correct">0</b></div>
+    <div class="spacer"></div>
+    <button class="btn-ghost" id="checkAll">Preveri vse</button>
+    <button class="btn-primary" id="shuffle">↻ Premešaj 40 vprašanj</button>
+  </div>
+
+  <ol class="quiz" id="quiz"></ol>
+
+  <footer>
+    Vir vprašanj: Navodila KZS za izpite nižjih stopenj (program A in B-BH) ter splošno kinološko gradivo.
+    <br>Pripomoček za vajo — ni uradni izpit.
+  </footer>
+</div>
+
+<script>
+const BANK = [
+// ---------- 1. Organiziranost KZS ----------
+{ s:1, q:"Kaj pomeni kratica KZS?",
+  options:["Kinološka zveza Slovenije","Klub za zaščito psov Slovenije","Kinološko združenje Slovenije","Komisija za zaščito živali Slovenije"], correct:0 },
+{ s:1, q:"Kaj pomeni kratica FCI?",
+  options:["Fédération Cynologique Internationale","Federacija za izšolane pse","Federation of Canine Institutes","Fédération Canine Internationale"], correct:0 },
+{ s:1, q:"Najvišji strokovni organ na področju šolanja pri KZS je?",
+  options:["Komisija za šolanje (KzŠ)","Strokovni svet","Skupščina KZS","Upravni odbor"], correct:0 },
+{ s:1, q:"Najvišji organ KZS je?",
+  options:["Skupščina (zbor članic)","Komisija za šolanje","Strokovni svet","Predsednik KZS"], correct:0 },
+{ s:1, q:"Temeljni predpis KZS je?",
+  options:["Statut KZS","Izpitni pravilnik","Zakon o zaščiti živali","Pravilnik o vzreji"], correct:0 },
+{ s:1, q:"Katerega leta je bila KZS sprejeta v Mednarodno kinološko zvezo (FCI)?",
+  options:["1992","1968","1980","2004"], correct:0 },
+{ s:1, q:"Kaj je kinologija?",
+  options:["Veda o psih","Veda o vzreji domačih živali","Veja veterine o cepljenju","Šola za vodenje psov"], correct:0 },
+{ s:1, q:"Kje je sedež KZS?",
+  options:["Vodice (Zapoge 3D)","Ljubljana","Maribor","Kranj"], correct:0 },
+
+// ---------- 2. Anatomija, fiziologija, prehrana, zoohigiena, bolezni ----------
+{ s:2, q:"Koliko zob ima odrasel pes?",
+  options:["42","32","28","48"], correct:0 },
+{ s:2, q:"Normalna telesna temperatura pri psu je?",
+  options:["38–39 °C","36–37 °C","40–41 °C","37 °C"], correct:0 },
+{ s:2, q:"Katero zaščitno cepljenje je obvezno?",
+  options:["Proti steklini","Proti pasji kugi","Proti parvovirozi","Proti leptospirozi"], correct:0 },
+{ s:2, q:"Kaj je displazija kolčnega sklepa?",
+  options:["Dedna razvojna nepravilnost kolčnega sklepa","Vnetje sklepov zaradi okužbe","Zlom stegnenice","Pomanjkanje kalcija v kosteh"], correct:0 },
+{ s:2, q:"Zakaj moramo odpraviti notranje zajedavce pri psu?",
+  options:["Škodujejo zdravju psa, nekateri so prenosljivi na človeka","Povzročajo agresivnost","Zaradi neprijetnega vonja","Da pes hitreje raste"], correct:0 },
+{ s:2, q:"Kako odpravimo notranje zajedavce pri psu?",
+  options:["Z rednim razglistenjem (antiparazitiki)","Z dieto brez mesa","S cepljenjem proti steklini","S kopanjem v posebnem šamponu"], correct:0 },
+{ s:2, q:"Kako se prenaša steklina?",
+  options:["Z ugrizom okužene živali (slina v rano)","Po zraku, s kapljicami","Z neoporečno hrano","Z bolhami in klopi"], correct:0 },
+{ s:2, q:"Na kakšen način se ljudje lahko okužijo z nevarno pasjo trakuljo?",
+  options:["Z zaužitjem jajčec (slaba higiena, stik z iztrebkom)","Z ugrizom psa","Z vdihavanjem prahu","Le z uživanjem surovega mesa"], correct:0 },
+{ s:2, q:"Kateri čut pri psu ni dobro razvit?",
+  options:["Razločevanje barv (vid)","Voh","Sluh","Tip"], correct:0 },
+{ s:2, q:"Klopi prenašajo toksoplazmozo?",
+  options:["Ne (prenašajo npr. babeziozo in boreliozo)","Da","Samo poleti","Samo na mladiče"], correct:0 },
+{ s:2, q:"Katera skupina hranil pri sami pripravi hrane ni potrebna?",
+  options:["Sladkor (dodani sladkorji)","Beljakovine","Maščobe","Vitamini"], correct:0 },
+{ s:2, q:"Kaj je obvezno pri oddaji mladičev (zdravstveno)?",
+  options:["Mikročip, prvo cepljenje, razglistenje, vet. dokumentacija","Le rodovnik","Samo cepljenje proti steklini","Nič posebnega"], correct:0 },
+{ s:2, q:"Kateri so ukrepi ob vročinski kapi pri psu?",
+  options:["Psa v senco/hlad, postopno hlajenje, voda, k veterinarju","Ovijemo ga v odejo in pustimo počivati","Damo mu ledeno kopel za hiter učinek","Damo mu sladko hrano"], correct:0 },
+{ s:2, q:"Kaj je pravilen ukrep, ko pes ugrizne človeka?",
+  options:["Oskrba rane, napotitev k zdravniku, prijava in vet. nadzor psa","Le opravičilo lastnika","Psa takoj evtanaziramo","Nič – manjši ugriz ni pomemben"], correct:0 },
+
+// ---------- 3. Določila pravilnika ----------
+{ s:3, q:"Koliko mora biti star pes, da lahko pristopi k izpitu B-BH?",
+  options:["Najmanj 14 mesecev","Najmanj 12 mesecev","Najmanj 6 mesecev","Najmanj 18 mesecev"], correct:0 },
+{ s:3, q:"Ali lahko posamezni pes na isti dan opravlja dva izpita?",
+  options:["Ne, le en izpit na dan","Da, največ dva","Da, neomejeno","Le z dovoljenjem sodnika"], correct:0 },
+{ s:3, q:"Koliko psov lahko vodnik vodi na isti prireditvi?",
+  options:["Največ dva","Samo enega","Tri","Neomejeno"], correct:0 },
+{ s:3, q:"Ali sme biti ovratnica med izpitom na zateg?",
+  options:["Ne, prilegati se mora ohlapno","Da, vedno","Le pri velikih psih","Le v urbanem delu"], correct:0 },
+{ s:3, q:"Ali lahko pes opravlja izpit B-BH z oprsnico?",
+  options:["Da, dovoljena je ovratnica ali oprsnica","Ne, samo ovratnica","Le z bodičasto ovratnico","Samo brez vsega"], correct:0 },
+{ s:3, q:"Iz koliko delov je sestavljen izpit B-BH?",
+  options:["Iz treh","Iz dveh","Iz štirih","Iz enega"], correct:0 },
+{ s:3, q:"Kaj preizkušamo v prvem delu izpita B-BH?",
+  options:["Teoretično (strokovno) znanje vodnika – pisni test","Poslušnost psa na vadišču","Obnašanje v urbanem okolju","Strelomirnost"], correct:0 },
+{ s:3, q:"Kaj preizkušamo v drugem delu izpita B-BH?",
+  options:["Poslušnost psa na vadišču","Teoretično znanje vodnika","Obnašanje v urbanem okolju","Zdravje psa"], correct:0 },
+{ s:3, q:"Kaj preizkušamo v tretjem delu izpita B-BH?",
+  options:["Obnašanje psa v urbanem okolju","Poslušnost na vadišču","Pisni test","Sledenje"], correct:0 },
+{ s:3, q:"Pri vaji prostor in odpoklic – koliko korakov se vodnik oddalji od psa po povelju »prostor«?",
+  options:["30 korakov","15 korakov","10 korakov","50 korakov"], correct:0 },
+{ s:3, q:"Pri vaji odlaganja z motenjem (B-BH) je vodnik oddaljen najmanj?",
+  options:["30 korakov","20 korakov","10 korakov","15 korakov"], correct:0 },
+{ s:3, q:"Pri vaji »sedi« se vodnik oddalji za?",
+  options:["15 korakov","30 korakov","10 korakov","20 korakov"], correct:0 },
+{ s:3, q:"Koliko korakov naravnost naredi vodnik, preden se obrne levo naokrog (vodljivost na povodcu, B-BH)?",
+  options:["50 korakov","40 korakov","30 korakov","20 korakov"], correct:0 },
+{ s:3, q:"Koliko korakov traja tek oziroma počasna hoja po obratu levo okrog?",
+  options:["Vsakič po 10–15 korakov","Vsakič po 20–25 korakov","Po 5 korakov","Po 30 korakov"], correct:0 },
+{ s:3, q:"Koliko korakov naredi vodnik pri vaji sedenja med hojo, preden poveljuje »sedi«?",
+  options:["10 do 15 korakov","20 do 30 korakov","5 korakov","40 korakov"], correct:0 },
+{ s:3, q:"Koliko korakov naredi vodnik pri vaji ležanja med hojo, preden poveljuje »prostor«?",
+  options:["10 do 15 korakov","20 do 30 korakov","30 korakov","5 korakov"], correct:0 },
+{ s:3, q:"Ali se pri izpitu B-BH preverja strelomirnost?",
+  options:["Ne","Da, vedno","Le pri lovskih psih","Le na tekmovanjih"], correct:0 },
+{ s:3, q:"Koliko odstotkov točk mora pes doseči za pozitivno oceno?",
+  options:["Najmanj 70 %","Najmanj 50 %","Najmanj 60 %","Najmanj 80 %"], correct:0 },
+{ s:3, q:"Kaj vsebuje preizkus obnašanja v urbanem okolju?",
+  options:["Srečanja z ljudmi, kolesarjem, avtomobili, tekači, psi, privezan pes","Le vaje poslušnosti","Le pisni test","Preizkus sledenja"], correct:0 },
+{ s:3, q:"Ali lahko vodnik vaje poslušnosti izvaja samostojno (na znak sodnika)?",
+  options:["Da","Ne, vedno mu pomaga inštruktor","Le na tekmovanjih","Samo z drugim vodnikom"], correct:0 },
+
+// ---------- 4. Splošna vprašanja ----------
+{ s:4, q:"S čim primarno pes zaznava okolje?",
+  options:["Z vohom","Z vidom","S sluhom","S tipom"], correct:0 },
+{ s:4, q:"S katerimi deli telesa pes izraža razpoloženje?",
+  options:["Z repom, ušesi, držo telesa, mimiko in glasovi","Le z lajanjem","Le z repom","Le z očmi"], correct:0 },
+{ s:4, q:"Ali mora biti pes v urbanem okolju na povodcu?",
+  options:["Da","Ne","Le ponoči","Le veliki psi"], correct:0 },
+{ s:4, q:"Kako se prepozna povabilo k igri pri psu?",
+  options:["Prednji del telesa spuščen, zadnji dvignjen (priklon k igri)","Renčanje in razkriti zobje","Ležanje na hrbtu","Pripet rep in umikanje"], correct:0 },
+{ s:4, q:"Način označevanja psov v Sloveniji je?",
+  options:["Z mikročipom","Z ušesno znamko","S tetovažo barvne pike","Z ovratnico z imenom"], correct:0 },
+{ s:4, q:"Na sprehodu z nenavezanim psom se vam približa vodnik z navezanim psom. Kaj storite?",
+  options:["Svojega psa pokličete in navežete","Pustite psa, naj steče k njemu","Spustite oba","Odidete v drugo smer brez ukrepa"], correct:0 },
+{ s:4, q:"Kako pogosto moramo čistiti pesjak?",
+  options:["Vsak dan","Enkrat tedensko","Enkrat mesečno","Po potrebi, brez pravila"], correct:0 },
+{ s:4, q:"Mladega psa do 6. meseca hranimo koliko obrokov na dan?",
+  options:["3 do 4 obroke","1 obrok","2 obroka","5 do 6 obrokov"], correct:0 },
+{ s:4, q:"Mladič skače po človeku in se hoče igrati. Ali je to normalno?",
+  options:["Da, a ga z vzgojo usmerimo","Ne, je znak agresije","Ne, je znak bolezni","Da, in tega ne spreminjamo"], correct:0 },
+{ s:4, q:"Kdaj moramo psa pohvaliti?",
+  options:["Takoj ob pravilnem vedenju","Šele po koncu treninga","Naslednji dan","Ob vsakem stiku, ne glede na vedenje"], correct:0 },
+{ s:4, q:"Pes leži na kavču in zarenči, ko se hoče oseba usesti. Ali je to normalno?",
+  options:["Ne, je nezaželeno vedenje (varovanje vira)","Da, pes pač počiva","Da, tako kaže naklonjenost","Le pri mladičih"], correct:0 },
+{ s:4, q:"Od česa je odvisna potreba psov po gibanju?",
+  options:["Od pasme, starosti, zdravja, temperamenta, kondicije","Samo od velikosti psa","Samo od starosti","Od barve dlake"], correct:0 },
+{ s:4, q:"Značaj psa sestavljajo?",
+  options:["Dedne lastnosti in vplivi okolja","Samo geni","Samo vzgoja","Samo prehrana"], correct:0 },
+{ s:4, q:"Strah in vedenje izogibanja sta?",
+  options:["Naravni obrambni reakciji","Znak bolezni","Znak agresije","Posledica lakote"], correct:0 },
+{ s:4, q:"Zakaj je socializacija psa pomembna?",
+  options:["Da se primerno odziva na ljudi, živali in okolje","Da hitreje raste","Da bolje je","Da je bolj agresiven do tujcev"], correct:0 },
+{ s:4, q:"Kdo je odgovoren, če vaš pes ugrizne tujo osebo na vaši posesti?",
+  options:["Lastnik psa","Poškodovana oseba","Občina","Nihče"], correct:0 },
+{ s:4, q:"Napadalnost psa do drugih psov je posledica?",
+  options:["Slabe socializacije, izkušenj, strahu ali vzgoje","Pasme same po sebi","Vrste hrane","Barve dlake"], correct:0 },
+{ s:4, q:"Katere vrste motivacij uporabljamo pri šolanju?",
+  options:["Hrano, igro, pohvalo","Kazen in strah","Le povišan glas","Le povodec na zateg"], correct:0 },
+{ s:4, q:"Ali je pes sposoben abstraktnega razmišljanja?",
+  options:["Ne, uči se z asociacijami","Da, kot človek","Da, a le starejši psi","Le nekatere pasme"], correct:0 },
+{ s:4, q:"Kaj želimo doseči s socializacijo psa?",
+  options:["Da se v različnih situacijah vede sproščeno in neagresivno","Da zna povelja","Da hitro teče","Da varuje hišo"], correct:0 },
+{ s:4, q:"Nagon plena pri psu je?",
+  options:["Prirojen (instinkten) nagon","Naučeno vedenje","Posledica lakote","Posledica slabe vzgoje"], correct:0 },
+{ s:4, q:"Nagon krdela pri psu je?",
+  options:["Prirojen nagon po življenju v skupini s hierarhijo","Naučena navada","Znak bolezni","Posledica šolanja"], correct:0 },
+{ s:4, q:"Ali naj vašega psa na sprehod sam pelje otrok?",
+  options:["Ne, nadzorovati mora odrasla oseba","Da, vedno","Le velikega psa","Le ponoči"], correct:0 },
+{ s:4, q:"Kdo pospravlja iztrebke vašega psa?",
+  options:["Lastnik oz. vodnik","Komunalna služba","Nihče","Občina"], correct:0 },
+{ s:4, q:"Kaj je vsakemu psu poleti treba zagotoviti?",
+  options:["Senco in stalen dostop do sveže vode","Več hrane","Toplo odejo","Daljše sprehode opoldne"], correct:0 },
+{ s:4, q:"Preganjanje divjadi s psom v lovišču je?",
+  options:["Prepovedano (razen pri zakonitem lovu)","Dovoljeno za vse pse","Priporočljivo za kondicijo","Dovoljeno z mladiči"], correct:0 },
+{ s:4, q:"Minimalna površina pesjaka za psa, težjega od 32 kg, je?",
+  options:["Najmanj 10 m²","Najmanj 4 m²","Najmanj 2 m²","Najmanj 20 m²"], correct:0 },
+{ s:4, q:"Ali hranjenje psa s surovim mesom povečuje agresivnost?",
+  options:["Ne","Da","Le pri velikih psih","Le pri samcih"], correct:0 },
+{ s:4, q:"Kako preprečimo, da bi pes postal problematičen?",
+  options:["Z zgodnjo socializacijo, dosledno vzgojo in dovolj gibanja","S strogim kaznovanjem","Z izolacijo od drugih psov","Z manj gibanja"], correct:0 },
+{ s:4, q:"Kaj naredimo, če nas mladič grize med igro?",
+  options:["Igro prekinemo in ponudimo primerno igračo","Ga udarimo po gobcu","Nadaljujemo igro","Ga zapremo za kazen"], correct:0 },
+{ s:4, q:"Na sprehodu s spuščenim psom pride nasproti tekač. Kaj storite?",
+  options:["Psa pokličete, navežete in umaknete ob stran","Pustite psa, naj teče za tekačem","Spustite psa naprej","Nič – tekač naj se umakne"], correct:0 },
+{ s:4, q:"Kdo lahko ocenjuje (sodi) izpite po programu B-BH?",
+  options:["Uradni sodnik za delo z licenco KZS","Vsak inštruktor","Lastnik psa","Predsednik društva"], correct:0 },
+{ s:4, q:"Najmanj koliko morajo biti stari mladiči za oddajo novemu lastniku?",
+  options:["Najmanj 8 tednov","Najmanj 4 tedne","Najmanj 12 tednov","Najmanj 6 tednov"], correct:0 },
+{ s:4, q:"Čemu se moramo pri hranjenju psa izogibati?",
+  options:["Čokoladi, čebuli, grozdju, ksilitolu, alkoholu","Mesu in ribam","Vodi","Suhi pasji hrani"], correct:0 },
+{ s:4, q:"Pod katerimi pogoji lahko pustim psa v avtu?",
+  options:["Le ob primerni temperaturi, v senci, kratek čas – nikoli v vročini","Vedno, če so okna zaprta","Poleti za nekaj ur","Z vklopljenim gretjem pozimi za ves dan"], correct:0 },
+{ s:4, q:"Kakšna mora biti ograda zemljišča, kjer se zadržuje pes?",
+  options:["Dovolj visoka in trdna, da pes ne pobegne in ne ogroža mimoidočih","Nizka, da pes vidi okolico","Le simbolična","Brez ograje, a z nadzorom"], correct:0 },
+{ s:4, q:"Če ima pes visok prag vzdražljivosti, to pomeni, da?",
+  options:["Se na dražljaje odziva manj burno (potrebuje močnejši dražljaj)","Je zelo razdražljiv","Je bolan","Je agresiven"], correct:0 },
+{ s:4, q:"Kateri ukrep je neprimeren pri navajanju mladiča na sobno čistost?",
+  options:["Kaznovanje in drgnjenje gobčka v iztrebek","Pohvala ob opravljeni potrebi zunaj","Redno vodenje ven","Potrpežljivost"], correct:0 },
+{ s:4, q:"Kako ravnamo s psom, ki je dominanten?",
+  options:["Z dosledno, mirno vzgojo postavimo jasna pravila in meje","S fizičnim kaznovanjem","Z izogibanjem psu","Z neomejeno svobodo"], correct:0 },
+{ s:4, q:"Kako se obnašamo, če smo vodnik plašnega psa?",
+  options:["Mirno, potrpežljivo, postopno navajanje brez siljenja","Silimo ga v stik z dražljaji","Kaznujemo strah","Ga izoliramo"], correct:0 },
+{ s:4, q:"V primeru, ko sta skupaj pes in otrok, moramo paziti na?",
+  options:["Stalni nadzor odrasle osebe","Da je pes lačen","Da je otrok starejši od psa","Nič posebnega"], correct:0 },
+];
+
+const LETTERS = ["A","B","C","D"];
+let current = [];
+
+function shuffle(a){
+  a = a.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuestion(item, idx){
+  // premešaj možnosti, ohrani kateri je pravilen
+  const order = shuffle([0,1,2,3]);
+  const opts = order.map(o => ({text:item.options[o], correct:o===item.correct}));
+
+  const li = document.createElement("li");
+  li.className = "q";
+  li.dataset.locked = "0";
+
+  const head = document.createElement("div");
+  head.className = "q-head";
+  const num = document.createElement("span");
+  num.className = "q-num";
+  const tag = document.createElement("span");
+  tag.className = "q-tag";
+  tag.textContent = "Sklop " + item.s;
+  head.appendChild(num);
+  head.appendChild(tag);
+
+  const qt = document.createElement("p");
+  qt.className = "q-text";
+  qt.textContent = item.q;
+
+  const optWrap = document.createElement("div");
+  optWrap.className = "opts";
+  const name = "q"+idx;
+  opts.forEach((op,i)=>{
+    const lab = document.createElement("label");
+    lab.className = "opt";
+    lab.dataset.correct = op.correct ? "1":"0";
+    const inp = document.createElement("input");
+    inp.type="radio"; inp.name=name; inp.value=i;
+    const letter = document.createElement("span");
+    letter.className="letter"; letter.textContent=LETTERS[i]+")";
+    const span = document.createElement("span");
+    span.textContent = op.text;
+    lab.appendChild(inp); lab.appendChild(letter); lab.appendChild(span);
+    optWrap.appendChild(lab);
+  });
+
+  const foot = document.createElement("div");
+  foot.className="q-foot";
+  const check = document.createElement("button");
+  check.className="btn-check";
+  check.textContent="Preveri";
+  const verdict = document.createElement("span");
+  verdict.className="verdict";
+  foot.appendChild(check);
+  foot.appendChild(verdict);
+
+  check.addEventListener("click", ()=> checkOne(li, verdict, check));
+
+  li.appendChild(head);
+  li.appendChild(qt);
+  li.appendChild(optWrap);
+  li.appendChild(foot);
+  return li;
+}
+
+function checkOne(li, verdict, check){
+  const chosen = li.querySelector('input:checked');
+  if(!chosen){
+    verdict.className="verdict no";
+    verdict.textContent="Najprej izberi odgovor.";
+    return;
+  }
+  if(li.dataset.locked === "1") return;
+  li.dataset.locked = "1";
+  check.disabled = true;
+
+  const labels = li.querySelectorAll("label.opt");
+  let gotIt = false;
+  labels.forEach(lab=>{
+    lab.classList.add("locked");
+    lab.querySelector("input").disabled = true;
+    const isCorrect = lab.dataset.correct === "1";
+    const isChosen = lab.querySelector("input").checked;
+    if(isCorrect) lab.classList.add("is-correct");
+    if(isChosen && !isCorrect) lab.classList.add("is-wrong");
+    if(isChosen && isCorrect) gotIt = true;
+  });
+  verdict.className = "verdict " + (gotIt ? "ok":"no");
+  verdict.textContent = gotIt ? "✓ Pravilno" : "✗ Napačno — pravilni odgovor je označen zeleno.";
+  updateScore();
+}
+
+function updateScore(){
+  const items = document.querySelectorAll("li.q");
+  let answered=0, correct=0;
+  items.forEach(li=>{
+    if(li.dataset.locked==="1"){
+      answered++;
+      if(li.querySelector("label.is-correct input")?.checked) correct++;
+    }
+  });
+  document.getElementById("answered").textContent = answered;
+  document.getElementById("correct").textContent = correct;
+}
+
+function render(){
+  const N = Math.min(40, BANK.length);
+  current = shuffle(BANK).slice(0, N);
+  const ol = document.getElementById("quiz");
+  ol.innerHTML = "";
+  current.forEach((it,i)=> ol.appendChild(buildQuestion(it,i)));
+  document.getElementById("answered").textContent = "0";
+  document.getElementById("correct").textContent = "0";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.getElementById("shuffle").addEventListener("click", render);
+document.getElementById("checkAll").addEventListener("click", ()=>{
+  document.querySelectorAll("li.q").forEach(li=>{
+    if(li.dataset.locked==="0"){
+      const v = li.querySelector(".verdict");
+      const c = li.querySelector(".btn-check");
+      if(li.querySelector('input:checked')) checkOne(li, v, c);
+    }
+  });
+});
+
+render();
+</script>
+</body>
+</html>
