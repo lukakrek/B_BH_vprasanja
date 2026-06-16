@@ -6,7 +6,7 @@
 
 **Testna vprašanja in odgovori**
 
-Vodnik psa spremljevalca B-BH (KZS)
+Vodnik psa B-BH (KZS)
 
 # 1. Organiziranost Kinološke zveze Slovenije
 
